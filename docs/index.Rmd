@@ -87,7 +87,7 @@ shapiro.test(dat_delomys$body_length)
 ```
 
 ## Graphical Exploration {.tabset .tabset-pills}
-
+### Scatterplot
 ```{r fig.asp= 0.75}
 
 # Create a scatterplot of body mass and body length
@@ -98,7 +98,7 @@ plot(body_length ~ body_mass, data = dat_delomys,
      xlim = c(0, 110), ylim =c(0,266))
 
 ```
-
+### Histograms
 ```{r}
 #Histogram of body mass 
 
@@ -113,7 +113,7 @@ hist(dat_delomys$body_mass, breaks = 40)
 hist(dat_delomys$body_length, breaks = 40)
 
 ```
-
+### Boxplots
 ```{r fig.asp= 0.75}
 #Conditonal boxplot of body mass, conditioned on species
 
@@ -151,24 +151,36 @@ This clearly rejects the null hypothesis of the shapiro test and suggests that t
 
 
 # Model Building {.tabset .tabset-pills}
-
+## Model 1
 ```{r}
 #Model 1: Simple linear regression body_length ~ body_mass
 fit_1 = lm(body_length ~ body_mass, data = dat_delomys)
 summary(fit_1)
+```
 
+## Model 2
+```{r}
 # Model 2: 1-way ANOVA body_mass ~ sex
 fit_2 = lm(body_mass ~ sex, data = dat_delomys)
 summary(fit_2)
+```
 
+## Model 3 
+```{r}
 # Model 3: 1-way ANOVA body_mass ~ binomial
 fit_3 = lm(body_mass ~ binomial, data = dat_delomys)
 summary(fit_3)
+```
 
+## Model 4
+```{r}
 #Model 4: 2-way additional ANOVA body_mass ~ sex + binomial
 fit_4 = lm(body_mass ~ sex + binomial, data = dat_delomys)
 summary(fit_4)
+```
 
+## Model 5
+```{r}
 # Model 5: 2-way ANOVA factorial body_mass ~ sex *binomial
 fit_5 = lm(body_mass ~ sex * binomial, data = dat_delomys)
 summary(fit_5)
@@ -211,6 +223,7 @@ hist(residuals(fit_4), breaks = 40)
 hist(residuals(fit_5), breaks = 40)
 
 ```
+
 ## Normality test of models residuals
 
 The null hypothesis of the Shapiro test is:" the residuals are drawn from a normally-distributed population".
@@ -263,7 +276,7 @@ knitr::kable(coef(summary(fit_1)), digits = 3)
 
 ```
 
-1- The mass/length relationship is a positive relationship. As the body mass increases, the body length increases too.
+1- The mass/length relationship is a positive relationship. As the body mass increases, the body length increases too. the magnitude of the mass/length relationship is 0.875
 
 2- The expected body length of an animal that weighs 100g is 7,612.87 g
 
