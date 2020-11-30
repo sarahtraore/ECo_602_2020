@@ -1,0 +1,343 @@
+---
+title: "ECo 602 - Analysis of Environmental Data"
+subtitle: "Final Project Template: Data Analysis"
+author: "Sarah Traore"
+date: "Fall 2020"
+output:
+  html_document:
+    theme: readable
+    toc: TRUE
+    toc_float: TRUE
+editor_options:
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(warning = FALSE)
+knitr::opts_chunk$set(message = FALSE)
+options(knitr.duplicate.label = TRUE)
+```
+
+
+Everything above this line is the header.
+
+<!-- The following text won't be displayed in your document.  It tells R how to make nicer looking buttons for your tabbed content. -->
+
+<style type="text/css" rel="stylesheet">
+
+.btn {
+    border-width: 0 0 0 0;
+    font-weight: normal;
+    text-transform: none;
+}
+
+.btn-default {
+    color: #2ecc71;
+    background-color: #ffffff;
+    border-color: #ffffff;
+}
+</style>
+
+
+
+# Introduction {.tabset .tabset-pills}
+
+The following code is a data analysis on data collected of two species of small mammals in the Atlantic Forest of Brazil.
+
+# Data Anaylsis {.tabset .tabset-pills}
+
+```{r}
+
+require(here)
+dat_delomys = read.csv(here("data", "delomys.csv"))
+
+
+```
+
+# Data Exploration {.tabset .tabset-pills}
+
+The exploration will be mainly performed on the body mass and length columns of the data
+
+## Numerical Exploration {.tabset .tabset-pills}
+
+```{r Data Exploration}
+#Display summary statistics of the data (mean, median, quantiles, min & max)
+
+summary(dat_delomys$body_mass)
+
+summary(dat_delomys$body_length)
+
+
+# Perform a test of normality (alpha = 0.05)
+
+shapiro.test(dat_delomys$body_mass)
+
+shapiro.test(dat_delomys$body_length)
+
+```
+
+## Graphical Exploration {.tabset .tabset-pills}
+
+```{r fig.asp= 0.75}
+
+# Create a scatterplot of body mass and body length
+
+plot(body_length ~ body_mass, data = dat_delomys,
+     main = "Scatterplot of body length & body mass", col='black',
+     pch = 1, cex = 1, xlab = "Body mass", ylab = "Body length",
+     xlim = c(0, 110), ylim =c(0,266))
+
+```
+
+```{r}
+#Histogram of body mass 
+
+hist(dat_delomys$body_mass, breaks = 40)
+
+```
+
+
+```{r}
+#Histogram of body length
+
+hist(dat_delomys$body_length, breaks = 40)
+
+```
+
+```{r fig.asp= 0.75}
+#Conditonal boxplot of body mass, conditioned on species
+
+boxplot(body_mass ~ binomial, data = dat_delomys, 
+        main = "Conditional boxplot of body mass by species")
+
+```
+
+```{r fig.asp= 0.75}
+#Conditonal boxplot of body mass, conditioned on sex
+
+boxplot(body_mass ~ sex, data = dat_delomys, 
+        main = "Conditional boxplot of body mass by sex")
+
+```
+
+```{r fig.asp= 0.75}
+#conditional boxplot of body mass, conditioned on both species and sex
+
+boxplot(body_mass ~ binomial * sex, data = dat_delomys,
+        main = "Conditional boxplot of body mass grouped by species & sex")
+
+```
+
+1- The scatterplot of body mass and length shows a linear relationship between body mass and length 
+
+2- The histograms for both body mass and body length are left-skewed, therefore we might conclude that the data are not normally-distributed.
+
+3- The numerical normality tests on body mass and body length show values of p-value respectively of 4.33e-05 and 0 that are both lower than 0.05.
+
+This clearly rejects the null hypothesis of the shapiro test and suggests that the data aren't normally-distributed. So, the numerical normality tests are in accordance with the histograms shapes.
+
+4- The body mass conditioned on sex is not spread and there is a very small difference between female and male body masses. On the contrary, there is a clear difference in body mass between the two species. 
+
+
+
+# Model Building {.tabset .tabset-pills}
+
+```{r}
+#Model 1: Simple linear regression body_length ~ body_mass
+fit_1 = lm(body_length ~ body_mass, data = dat_delomys)
+summary(fit_1)
+
+# Model 2: 1-way ANOVA body_mass ~ sex
+fit_2 = lm(body_mass ~ sex, data = dat_delomys)
+summary(fit_2)
+
+# Model 3: 1-way ANOVA body_mass ~ binomial
+fit_3 = lm(body_mass ~ binomial, data = dat_delomys)
+summary(fit_3)
+
+#Model 4: 2-way additional ANOVA body_mass ~ sex + binomial
+fit_4 = lm(body_mass ~ sex + binomial, data = dat_delomys)
+summary(fit_4)
+
+# Model 5: 2-way ANOVA factorial body_mass ~ sex *binomial
+fit_5 = lm(body_mass ~ sex * binomial, data = dat_delomys)
+summary(fit_5)
+
+```
+# Model Diagnostics
+
+```{r}
+#Histogram of model 1 residuals
+hist(residuals(fit_1), breaks = 40)
+
+```
+
+
+```{r}
+#Histogram of model 2 residuals
+hist(residuals(fit_2), breaks = 40)
+
+```
+
+
+```{r}
+#Histogram of model 3 residuals
+hist(residuals(fit_3), breaks = 40)
+
+```
+
+
+```{r}
+#Histogram of model 4 residuals
+hist(residuals(fit_4), breaks = 40)
+
+```
+
+
+```{r}
+#Histogram of model 5 residuals
+hist(residuals(fit_5), breaks = 40)
+
+```
+
+
+The null hypothesis of the Shapiro test is:" the residuals are drawn from a normally-distributed population".
+
+Let's test the null hypothesis for each model.
+
+```{r}
+#Model 1
+shapiro.test(residuals(fit_1))
+
+```
+
+
+```{r}
+#Model 2 
+shapiro.test(residuals(fit_2))
+
+```
+
+
+```{r}
+#Model 3 
+shapiro.test(residuals(fit_3))
+
+```
+
+
+```{r}
+#Model 4 
+shapiro.test(residuals(fit_4))
+
+```
+
+
+```{r}
+#Model 5
+shapiro.test(residuals(fit_5))
+
+```
+
+Based on the numerical and graphical diagnostics, residuals are not normally-distributed for all the models. However, the violations of the normality assumption are more severe for the models 1 and 2 than the others.
+
+
+
+# Model Interpretation
+## Body Length
+```{r  Model 1 coefficient table}
+
+knitr::kable(coef(summary(fit_1, digits = 3)))
+
+```
+
+1- The mass/length relationship is a positive relationship. As the body mass increases, the body length increases too.
+
+2- The expected body length of an animal that weighs 100g is 7,612.87 g
+
+3- The expected body length of an animal that weighs 0g is 0.875g
+
+## Body Mass: Model Coefficients
+```{r}
+#Model 2 
+knitr::kable(coef(summary(fit_2)))
+
+#Model 3 
+knitr::kable(coef(summary(fit_3)))
+
+#Model 4 
+knitr::kable(coef(summary(fit_4)))
+
+#Model 5 
+knitr::kable(coef(summary(fit_5)))
+
+```
+
+1- The base level for sex is female
+
+2- The base level for binomial is Delomys dorsalis
+
+3- The heavier sex is Female
+
+4- The heavier species is Delomys dorsalis
+
+
+## Body Mass: ANOVA
+
+```{r ANOVA table}
+
+#Model 2 
+knitr::kable(anova(fit_2))
+
+#Model 3 
+knitr::kable(anova(fit_3))
+
+#Model 4
+knitr::kable(anova(fit_4))
+
+#Model 5 
+knitr::kable(anova(fit_5))
+```
+
+1- The p-values for sex (model 2) and species (model 3) are both lower than the significant level alpha (0.05), so they are significant predictors for body mass since we can reject the null hypothesis.
+
+2- There p-value for the factorial 2-way ANOVA (model 5) is 0.95 > 0.05, so there isn't a significant interaction between species and sex. 
+
+3- The significance of either of the main effects (sex and species) does not differ much between the single-predictor models, the additive model, and the interactive model.
+
+# Model Comparison: Body Mass
+
+We use the AIC criterion to compare the models.
+
+```{r}
+AIC_2 = AIC(fit_2)
+print(AIC_2)
+```
+
+
+```{r}
+AIC_3 = AIC(fit_3)
+print(AIC_3)
+```
+
+
+```{r}
+AIC_4 = AIC(fit_4)
+print(AIC_4)
+```
+
+
+```{r}
+AIC_5 = AIC(fit_5)
+print(AIC_5)
+```
+
+The 2-way additive ANOVA (model 4) and the 2-way factorial ANOVA (model 5) have the lowest AIC. However, I would choose the 2-way additive ANOVA because not only it has the lowest AIC, but also the interaction p-value of the other model is larger than α which does not show a significant interaction between the species and the sex.
+
+
+is adequate, and you should re-run the analysis without an interaction
+term, and then interpret each of the p-values as in one-way ANOVA,
+realizing that the effects of changes in one factor are the same at every
+fixed level of the other factor
+
