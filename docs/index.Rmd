@@ -440,7 +440,9 @@ shapiro.test(residuals(fit_5))
 
 ```
 
-Based on the numerical and graphical diagnostics, residuals are not normally-distributed for all the models. However, the violations of the normality assumption are more severe for the models 1 and 2 than the others.
+Based on the numerical diagnostic, residuals are not normally-distributed for all the models (P-values < 0.05). However, the graphical diagnostic shows quasi-bell shapes for models 3, 4, and 5 which seem to be normally-distributed. Therefore, we can observe a mismatch of results between the numeric and the graphical diagnostic for those last three models. 
+
+The violations of the normality assumption are more severe for the models 1 and 2 than the others.
 
 # Model Interpretation {.tabset .tabset-pills}
 ## Body Length
@@ -488,7 +490,7 @@ knitr::kable(coef(summary(fit_5)), digits = 3)
 
 2- The base level for binomial is Delomys dorsalis
 
-3- The heavier sex is Female
+3- The heavier sex is Male
 
 4- The heavier species is Delomys dorsalis
 
