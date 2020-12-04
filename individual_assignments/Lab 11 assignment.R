@@ -352,7 +352,7 @@ save(sim_output_dispersion,
      file = here::here("data","lab_11_dat_dispersion_sim.RData"))
 
 png(
-  filename = here ("Poplulation dispersal vs plot lab 11.png"),
+  filename = here ("Population dispersal vs plot lab 11.png"),
   width = 1200, height = 1200,
   res = 270, units = "px")
 plot(
@@ -364,16 +364,16 @@ dev.off()
 
 #Question 2 : dispersion n contour plot
 alpha = 0.05
-n_sims = 10
+n_sims = 1000
 p_vals = numeric(n_sims)
 sd_obs
 
-n_sds = 100
+n_sds = 200
 pop_sds = seq(0.05, 1.5, length.out = n_sds)
 
 pop_sd_power = numeric(n_sds)
 
-sample_sizes_1 = seq(5, 50)
+sample_sizes_1 = seq(5, 100)
 
 sim_output_3 = matrix(nrow = length(pop_sds), ncol = length(sample_sizes_1))
 
@@ -415,11 +415,19 @@ save(
   file = here::here("data", "lab_ll_sim_output_dispersion_n_1000.RData"))
 
 #CONTOUR PLOTTING Q2
+png(
+  filename = here ("Contour plot lab 11.png"),
+  width = 1200, height = 1200,
+  res = 270, units = "px")
 contour(x = sim_3_dat$pop_sd,
         y = sim_3_dat$sample_size,
         z = sim_3_dat$power)
-
+dev.off()
 #Perspective plot
+png(
+  filename = here ("perspective plot lab 11.png"),
+  width = 1200, height = 1200,
+  res = 270, units = "px")
 persp(
   x = sim_3_dat$pop_sd,
   y = sim_3_dat$sample_size,
@@ -428,7 +436,7 @@ persp(
   col = 'green',
   theta = 30, phi = 30, expand = .75,
   ticktype = 'detailed')
-
+dev.off()
 #Interactive Plot
 
 library(rgl)
@@ -438,7 +446,7 @@ persp3d( x = sim_3_dat$pop_sd,
          xlab = "pop sd", ylab = "n", zlab = "power",
          col = 'green',
          theta = 30, phi = 30, expand = .75,
-         ticktype = 'detailed')
+         ticktype = 'detailed', alpha = 0.2)
 
 #saving an interactive plot
 

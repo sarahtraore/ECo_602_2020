@@ -44,7 +44,170 @@ options(knitr.duplicate.label = TRUE)
 
 The following code is a data analysis on data collected of two species of small mammals in the Atlantic Forest of Brazil.
 
-# Data Anaylsis {.tabset .tabset-pills}
+# Part 1 : Code Example {.tabset .tabset-pills}
+
+# Data Types and Subsetting {.tabset .tabset-pills}
+
+## Data Structures
+
+### Vectors
+
+```{r}
+# Create a vector of numbers to stock data
+numeric_vec = c(21, 6, 2019)
+
+print(numeric_vec)
+
+# Create a vector of characters to stock data
+
+char_vec = c("day", "month", "year")
+
+print(char_vec)
+```
+
+### Data Frame
+
+```{r}
+# Create a data frame to range the vector containing various types of data
+
+my_data = data.frame(x = char_vec, y = numeric_vec)
+my_data
+```
+
+### Matrix
+```{r}
+# Create a matrix of numbers
+
+matrix(1 : 30, byrow = TRUE, nrow = 6)
+```
+
+
+## Subsetting Operators and Functions
+```{r}
+# Subsetting "2019" from the data frame using [row, column]
+
+my_data [3,2]
+
+# Subsetting "2019" from the data frame using $
+
+my_data$y[3]
+
+# Subsetting "2019" from the data frame using subset
+subset(my_data, y== 2019)
+
+```
+
+# Required Functions and Arguments {.tabset .tabset-pills}
+This code will be written using the penguins data
+```{r}
+require(palmerpenguins)
+penguins_dat = penguins
+head(penguins_dat)
+```
+
+## Functions 1: Data Structure Functions
+```{r}
+length(penguins_dat)
+nrow(penguins_dat)
+ncol(penguins_dat)
+dim(penguins_dat)
+```
+
+## Functions 2 : Numerical Data Exploration
+```{r}
+#Summary of the penguins data
+
+summary(penguins_dat)
+
+# Mean of the bill length of penguin data excluding NA values
+mean(penguins_dat$bill_length_mm, na.rm = TRUE)
+
+# Standard deviation of the bill length of penguin data excluding NA values
+
+sd(penguins_dat$bill_length_mm, na.rm = TRUE)
+
+```
+
+## Functions 3: Graphical Data Exploration
+```{r}
+par(mfrow = c(1,2))
+
+# Represent a scatterplot of bill length and depth of penguins data 
+
+plot(bill_length_mm ~ bill_depth_mm, data = penguins_dat, 
+     col = "blue",
+     pch = 3,
+     cex = 0.5,
+     main = "Scatterplot of bill length and  \n depth of penguins data ", 
+     xlab = "bill depth (mm)",
+     ylab = "bill length (mm)",
+     xlim = c(10,25),
+     ylim = c(30,60))
+
+# Represent an histogram of bill length 
+
+hist(penguins_dat$bill_length_mm, breaks = 50, main = "Histogram of bill length")
+
+# Represent a single boxplot of bill length of penguins data 
+
+boxplot(penguins_dat$bill_length_mm, main = "Boxplot of bill length", xlab = "penguins", ylab = "bill length mm", col = "orange" )
+
+# Represent a conditional boxplot of bill length conditioned on species
+
+boxplot(bill_length_mm ~ species, data = penguins_dat, 
+        main = "Boxplot of bill length \n conditioned on species", 
+        col = "blue")
+
+```
+
+## Functions 4: Distribution Functions
+```{r}
+#  Density of a normal distribution mean = 2 and sd = 2
+
+dnorm(1.2, mean = 2, sd = 2)
+
+# Distribution function of a normal distribution mean = 2 and sd = 2
+
+pnorm(1.2, mean = 2, sd = 2)
+
+# Quantile function of a normal distribution mean = 2 and sd = 2
+
+qnorm(0.2, mean = 2, sd = 2)
+
+# Density of a binomial distribution n = 4 and p = 0.75
+
+dbinom(3, 4, 0.75)
+
+# Distribution function of a binomial distribution n = 4 and p = 0.75
+
+pbinom(3, 4, 0.75)
+
+# Quantile function of a binomial distribution n = 4 and p = 0.75
+
+qbinom(0.2, 4, 0.75)
+
+
+```
+## Functions 5: Other Functions
+
+```{r}
+# Load a function or package already existing in R
+require(here)
+
+library(here)
+
+#Read data in table csv format
+bird_sub = read.csv(here("data", "bird.sub.csv"))
+
+# Retrieve subset from a data frame or matrix under some required condition
+
+subset_bird = subset(bird_sub, basin == "D" )
+head(subset_bird)
+
+```
+
+
+# Part 2 : Data Anaylsis {.tabset .tabset-pills}
 
 ```{r}
 
@@ -67,12 +230,21 @@ summary(dat_delomys$body_mass)
 
 summary(dat_delomys$body_length)
 ```
+### Mean
+```{r}
+#Mean of the body mass and length data
+mean(dat_delomys$body_mass)
+
+mean(dat_delomys$body_length)
+```
+
 
 ### Standard deviation
 ```{r }
-# Standard deviation of the data
+# Standard deviation of the body mass and length data
 
 sd (dat_delomys$body_mass)
+
 sd(dat_delomys$body_length)
 ```
 
@@ -88,6 +260,7 @@ shapiro.test(dat_delomys$body_length)
 
 ## Graphical Exploration {.tabset .tabset-pills}
 ### Scatterplot
+
 ```{r fig.asp= 0.75}
 
 # Create a scatterplot of body mass and body length
@@ -98,24 +271,24 @@ plot(body_length ~ body_mass, data = dat_delomys,
      xlim = c(0, 110), ylim =c(0,266))
 
 ```
+
 ### Histograms
-```{r}
+
+```{r results='hold'}
 #Histogram of body mass 
 
 hist(dat_delomys$body_mass, breaks = 40)
 
-```
-
-
-```{r}
 #Histogram of body length
 
 hist(dat_delomys$body_length, breaks = 40)
 
 ```
+
 ### Boxplots
-```{r fig.asp= 0.75}
-#Conditonal boxplot of body mass, conditioned on species
+
+```{r fig.asp= 0.75 }
+#Conditional boxplot of body mass, conditioned on species
 
 boxplot(body_mass ~ binomial, data = dat_delomys, 
         main = "Conditional boxplot of body mass by species")
@@ -123,7 +296,7 @@ boxplot(body_mass ~ binomial, data = dat_delomys,
 ```
 
 ```{r fig.asp= 0.75}
-#Conditonal boxplot of body mass, conditioned on sex
+#Conditional boxplot of body mass, conditioned on sex
 
 boxplot(body_mass ~ sex, data = dat_delomys, 
         main = "Conditional boxplot of body mass by sex")
@@ -146,8 +319,7 @@ boxplot(body_mass ~ binomial * sex, data = dat_delomys,
 
 This clearly rejects the null hypothesis of the shapiro test and suggests that the data aren't normally-distributed. So, the numerical normality tests are in accordance with the histograms shapes.
 
-4- The body mass conditioned on sex is not spread and there is a very small difference between female and male body masses. On the contrary, there is a clear difference in body mass between the two species. 
-
+4- The body mass conditioned on sex is not spread, and there is a very small difference between female and male body masses. On the contrary, there is a clear difference in body mass between the two species. 
 
 
 # Model Building {.tabset .tabset-pills}
@@ -186,7 +358,7 @@ fit_5 = lm(body_mass ~ sex * binomial, data = dat_delomys)
 summary(fit_5)
 
 ```
-# Model Diagnostics
+# Model Diagnostics {.tabset .tabset-pills}
 
 ## Histograms of models residuals
 
@@ -266,9 +438,7 @@ shapiro.test(residuals(fit_5))
 
 Based on the numerical and graphical diagnostics, residuals are not normally-distributed for all the models. However, the violations of the normality assumption are more severe for the models 1 and 2 than the others.
 
-
-
-# Model Interpretation
+# Model Interpretation {.tabset .tabset-pills}
 ## Body Length
 ```{r  Model 1 coefficient table}
 
@@ -276,23 +446,35 @@ knitr::kable(coef(summary(fit_1)), digits = 3)
 
 ```
 
-1- The mass/length relationship is a positive relationship. As the body mass increases, the body length increases too. the magnitude of the mass/length relationship is 0.875
+1- The magnitude of the mass/length relationship is 0.875. It is a positive relationship; as the body mass increases, the body length increases too. 
 
-2- The expected body length of an animal that weighs 100g is 7,612.87 g
+2- The expected body length of an animal that weighs 100g is 163.625 
 
-3- The expected body length of an animal that weighs 0g is 0.875g
+3- The expected body length of an animal that weighs 0g is 76.125
 
-## Body Mass: Model Coefficients
+## Body Mass: Model Coefficients {.tabset .tabset-pills}
+### Coeff Table Model 2
 ```{r}
 #Model 2 
 knitr::kable(coef(summary(fit_2)), digits = 3)
+```
 
+
+### Coeff Table Model 3
+```{r}
 #Model 3 
 knitr::kable(coef(summary(fit_3)), digits = 3)
+```
 
+### Coeff Table Model 4 
+```{r}
 #Model 4 
 knitr::kable(coef(summary(fit_4)), digits = 3)
+```
 
+
+### Coeff Table Model 5
+```{r}
 #Model 5 
 knitr::kable(coef(summary(fit_5)), digits = 3)
 
@@ -307,26 +489,35 @@ knitr::kable(coef(summary(fit_5)), digits = 3)
 4- The heavier species is Delomys dorsalis
 
 
-## Body Mass: ANOVA
+## Body Mass: ANOVA {.tabset .tabset-pills}
 
-```{r ANOVA table}
-
+### ANOVA Model 2 
+```{r }
 #Model 2 
 knitr::kable(anova(fit_2), digits = 3)
+```
 
+### ANOVA Model 3 
+```{r }
 #Model 3 
 knitr::kable(anova(fit_3), digits = 3)
+```
 
+### ANOVA Model 4
+```{r }
 #Model 4
 knitr::kable(anova(fit_4), digits = 3)
+```
 
+### ANOVA Model 5
+```{r }
 #Model 5 
 knitr::kable(anova(fit_5), digits = 3)
 ```
 
 1- The p-values for sex (model 2) and species (model 3) are both lower than the significant level alpha (0.05), so they are significant predictors for body mass since we can reject the null hypothesis.
 
-2- There p-value for the factorial 2-way ANOVA (model 5) is 0.95 > 0.05, so there isn't a significant interaction between species and sex. 
+2- The p-value for the factorial 2-way ANOVA (model 5) is 0.95 > 0.05, so there isn't a significant interaction between species and sex. 
 
 3- The significance of either of the main effects (sex and species) does not differ much between the single-predictor models, the additive model, and the interactive model.
 
@@ -357,5 +548,7 @@ AIC_5 = AIC(fit_5)
 print(AIC_5)
 ```
 
-The 2-way additive ANOVA (model 4) and the 2-way factorial ANOVA (model 5) have the lowest AIC. However, I would choose the 2-way additive ANOVA because not only it has the lowest AIC, but also the interaction p-value of the other model is larger than α which does not show a significant interaction between the species and the sex.
+The 2-way additive ANOVA (model 4) and the 2-way factorial ANOVA (model 5) have the lowest AIC.
+
+However, I would choose the 2-way additive ANOVA because not only it has the lowest AIC, but also it does not require additional predictors that would make the model more complex and difficult to understand. Moreover, the interaction p-value of the other model (factorial ANOVA) is larger than α which does not show any significant interaction between the species and the sex.
 
