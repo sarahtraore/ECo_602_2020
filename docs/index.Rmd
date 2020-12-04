@@ -107,9 +107,13 @@ head(penguins_dat)
 
 ## Functions 1: Data Structure Functions
 ```{r}
+# Set the length of the penguins data frame
 length(penguins_dat)
+# Get the number of rows in the penguins data frame
 nrow(penguins_dat)
+# Get the number of columns in the penguins data frame
 ncol(penguins_dat)
+# Get the dimension of the penguins data
 dim(penguins_dat)
 ```
 
